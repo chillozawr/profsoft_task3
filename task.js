@@ -53,13 +53,17 @@ const orderDays = new Map([
 	['SUNDAY', 0]
 ]);
 
-const productCounter = (productArray, dayMap) => {
-	productArray.forEach((item) => {
+const productCounter = id => {
+	const productMap = new Map();
+	products.forEach((item) => {
 		const date = new Date(item.creationDate);
-		const count = dayMap.get(days[date.getDay()]);
-		dayMap.set(days[date.getDay()],  count + item.orderLines.length);
+		const count = orderDays.get(days[date.getDay()]);
+		item.orderLines.forEach(prdId => {
+			if (prdId.productId === id)
+				orderDays.set(days[date.getDay()],  count + prdId.quantity);
+		})
 	});
-	return Object.fromEntries(dayMap.entries());
+	return Object.fromEntries(orderDays.entries());
 };
 
-console.log(productCounter(products, orderDays));
+console.log(productCounter(4098));
